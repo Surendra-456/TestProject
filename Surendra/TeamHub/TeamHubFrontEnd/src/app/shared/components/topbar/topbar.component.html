@@ -1,0 +1,118 @@
+<header class="topbar">
+  <nav class="main-nav">
+
+    <button
+      class="nav-item"
+      routerLink="/home"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      type="button">
+      Home
+    </button>
+
+    @if (authService.isAdmin()) {
+    <button
+      class="nav-item"
+      routerLink="/people"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      type="button">
+      People
+    </button>
+
+    <div
+      class="settings-dropdown"
+      routerLinkActive="active"
+      #rla="routerLinkActive">
+
+      <button
+        class="nav-item"
+        
+        type="button">
+        Settings ▼
+      </button>
+
+      <div class="dropdown-menu">
+
+        <a routerLink="/master/department"
+           routerLinkActive="active-menu">
+          Department
+        </a>
+
+        <a routerLink="/master/designation"
+           routerLinkActive="active-menu">
+          Designation
+        </a>
+
+        <a routerLink="/master/business-unit"
+           routerLinkActive="active-menu">
+          Business Unit
+        </a>
+
+        <a routerLink="/master/dress-size"
+           routerLinkActive="active-menu">
+          Dress Size
+        </a>
+
+        <a routerLink="/master/cotivity-department"
+           routerLinkActive="active-menu">
+          Cotivity Department
+        </a>
+
+        <a routerLink="/master/cotivity-designation"
+           routerLinkActive="active-menu">
+          Cotivity Designation
+        </a>
+
+        <a routerLink="/master/cotivity-employee"
+           routerLinkActive="active-menu">
+          Cotivity Employee
+        </a>
+
+        <a routerLink="/master/role"
+           routerLinkActive="active-menu">
+          Role
+        </a>
+
+        <a routerLink="/master/address-type"
+           routerLinkActive="active-menu">
+          Address Type
+        </a>
+
+        <a routerLink="/master/blood-group"
+           routerLinkActive="active-menu">
+          Blood Group
+        </a>
+
+        <a routerLink="/master/skills"
+           routerLinkActive="active-menu">
+          Skills
+        </a>
+
+        <a routerLink="/master/job-type"
+           routerLinkActive="active-menu">
+          Job Type
+        </a>
+
+        <a routerLink="/master/team"
+           routerLinkActive="active-menu">
+          Team
+        </a>
+
+        <a routerLink="/master/gender"
+           routerLinkActive="active-menu">
+          Gender
+        </a>
+
+      </div>
+
+    </div>
+    }
+
+  </nav>
+  @if (authService.isAuthenticated) {
+    <button class="nav-item sign-out" type="button" (click)="logout()">Sign out</button>
+  } @else {
+    <button class="nav-item sign-out" type="button" routerLink="/login">Sign in</button>
+  }
+</header>

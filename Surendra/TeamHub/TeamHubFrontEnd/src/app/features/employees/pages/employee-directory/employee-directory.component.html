@@ -1,0 +1,47 @@
+<div class="page-shell">
+  <app-topbar />
+
+  <main class="directory-panel">
+    <div class="tab-row" role="tablist" aria-label="Directory tabs" *ngIf="!readOnlyHome && activeView !== 'details'">
+      <app-employee-tab
+        *ngFor="let tab of tabs"
+        [label]="tab.label"
+        [active]="activeView === tab.key"
+        (selected)="selectView(tab.key)"
+      />
+    </div>
+
+    <app-directory-view
+      *ngIf="activeView === 'directory'"
+      [employees]="employees"
+      [tableLayout]="tableLayout"
+      [readOnlyHome]="readOnlyHome"
+      [showAddButton]="!readOnlyHome"
+      [isLoading]="isLoading"
+      [pageNumber]="pageNumber"
+      [pageSize]="pageSize"
+      [totalCount]="totalCount"
+      [searchTerm]="searchTerm"
+      [searchField]="searchField"
+      (searchTermChange)="updateSearchTerm($event)"
+      (searchFieldChange)="updateSearchField($event)"
+      (pageChange)="changePage($event)"
+      (pageSizeChange)="changePageSize($event)"
+      (editEmployee)="editEmployee($event)"
+      (releaseEmployee)="releaseEmployee($event)"
+      (viewEmployeeHierarchy)="showEmployeeHierarchy($event)"
+      (viewEmployeeDetails)="showEmployeeDetails($event)"
+    />
+    <app-departments-view *ngIf="!readOnlyHome && activeView === 'departments'" />
+    <app-employee-hierarchy
+      *ngIf="!readOnlyHome && activeView === 'hierarchy' && hierarchyEmployeeId !== null"
+      [employeeId]="hierarchyEmployeeId"
+      (back)="returnToDirectory()"
+    />
+    <app-employee-details
+      *ngIf="!readOnlyHome && activeView === 'details' && selectedEmployeeId !== null"
+      [employeeId]="selectedEmployeeId"
+      (back)="returnToDirectory()"
+    />
+  </main>
+</div>

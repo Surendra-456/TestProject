@@ -1,0 +1,16 @@
+<main class="auth-page">
+  <section class="auth-card" aria-labelledby="login-title">
+    <div class="brand-mark" aria-hidden="true">TH</div>
+    <p class="eyebrow">TEAMHUB</p>
+    <h1 id="login-title">Welcome back</h1>
+    <p class="intro">Sign in with your Microsoft 365 work account.</p>
+
+      @if (errorMessage) {
+        <p class="error-message" role="alert">{{ errorMessage }}</p>
+      }
+
+      <button type="button" [disabled]="isSubmitting" (click)="signIn()">
+        {{ isSubmitting ? 'Connecting…' : 'Sign in with Microsoft' }}
+      </button>
+  </section>
+</main>

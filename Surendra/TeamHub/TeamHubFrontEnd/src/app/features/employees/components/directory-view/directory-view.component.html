@@ -1,0 +1,139 @@
+<app-directory-controls
+  [searchTerm]="searchTerm"
+  (searchTermChange)="searchTermChange.emit($event)"
+  [searchField]="searchField"
+  (searchFieldChange)="searchFieldChange.emit($event)"
+/>
+
+<app-results-header
+  [isLoading]="isLoading"
+  [count]="totalCount"
+  [showAddButton]="showAddButton"
+/>
+
+<p class="loading-state" *ngIf="isLoading" aria-live="polite">Loading employees...</p>
+
+<section class="employee-table-wrap" *ngIf="tableLayout" aria-label="Employee list">
+  <table class="employee-table">
+    <thead>
+      <tr>
+        <th scope="col">Image</th>
+        <th scope="col">Name</th>
+        <th scope="col">Department</th>
+        <th scope="col">Team Name</th>
+        <th scope="col">Designation Name</th>
+        <th scope="col"><span class="visually-hidden">Actions</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let employee of employees" [class.menu-open]="openMenuEmployeeId === employee.id">
+        <td>
+          <img class="employee-table-avatar" [src]="employee.imageBase64" [alt]="employee.name + ' photo'" />
+        </td>
+        <td class="employee-table-name">
+          <button type="button" class="employee-details-link" (click)="showDetails(employee.id)">
+            {{ employee.name }}
+          </button>
+        </td>
+        <td>{{ employee.department || '—' }}</td>
+        <td>{{ employee.teamName || '—' }}</td>
+        <td>{{ employee.designation || '—' }}</td>
+        <td class="employee-table-actions">
+          <div class="employee-action-menu" (click)="$event.stopPropagation()">
+            <button
+              type="button"
+              class="menu-trigger"
+              [attr.aria-label]="'Actions for ' + employee.name"
+              [attr.aria-expanded]="openMenuEmployeeId === employee.id"
+              [attr.aria-controls]="'employee-menu-' + employee.id"
+              title="Employee actions"
+              (click)="toggleActionMenu(employee.id, $event)">
+              <span class="menu-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            </button>
+            <div class="action-menu" *ngIf="openMenuEmployeeId === employee.id" [id]="'employee-menu-' + employee.id" role="menu">
+              <button
+                type="button"
+                class="hierarchy-menu-item"
+                role="menuitem"
+                [attr.aria-label]="'View hierarchy for ' + employee.name"
+                title="View employee hierarchy"
+                (click)="showHierarchy(employee.id)">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path d="M12 3v5m0 0H6m6 0h6M6 8v4m12-4v4M6 12H4v7h5v-7H6Zm12 0h-2v7h5v-7h-3Zm-6-4v4m0 0h-2v7h5v-7h-3Z" />
+                </svg>
+              </button>
+              <button type="button" role="menuitem" (click)="edit(employee.id)">Edit</button>
+              <button type="button" class="release-menu-item" role="menuitem" (click)="release(employee.id)">Release</button>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <tr *ngIf="isLoading">
+        <td colspan="6" class="employee-table-status" aria-live="polite">Loading employees...</td>
+      </tr>
+      <tr *ngIf="!isLoading && employees.length === 0">
+        <td colspan="6" class="employee-table-status">No employees match your search.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="employee-grid" *ngIf="!tableLayout && !isLoading && employees.length > 0" aria-label="Employee list">
+  <article class="employee-card" *ngFor="let employee of employees" [class.menu-open]="openMenuEmployeeId === employee.id">
+    <div class="avatar-wrap">
+      <img *ngIf="readOnlyHome" [src]="employee.imageBase64" [alt]="employee.name" />
+      <img *ngIf="!readOnlyHome" [src]="employee.imageBase64" [alt]="employee.name" />
+    </div>
+
+    <div class="card-body">
+      <button *ngIf="!readOnlyHome" type="button" class="employee-summary" (click)="showDetails(employee.id)" [attr.aria-label]="'View details for ' + employee.name">
+        <h2>{{ employee.name }}</h2>
+        <p class="role">{{ employee.designation }}</p>
+        <span class="tag" [style.background]="employee.accent">{{ employee.department }}</span>
+      </button>
+      <div *ngIf="readOnlyHome" class="employee-summary">
+        <h2>{{ employee.name }}</h2>
+        <p class="role">{{ employee.designation }}</p>
+        <span class="tag" [style.background]="employee.accent">{{ employee.department }}</span>
+      </div>
+      <div *ngIf="!readOnlyHome" class="employee-action-menu" (click)="$event.stopPropagation()">
+        <button
+          type="button"
+          class="menu-trigger"
+          [attr.aria-label]="'Actions for ' + employee.name"
+          [attr.aria-expanded]="openMenuEmployeeId === employee.id"
+          [attr.aria-controls]="'employee-menu-' + employee.id"
+          title="Employee actions"
+          (click)="toggleActionMenu(employee.id, $event)">
+          <span class="menu-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        </button>
+        <div class="action-menu" *ngIf="openMenuEmployeeId === employee.id" [id]="'employee-menu-' + employee.id" role="menu">
+          <button
+            type="button"
+            class="hierarchy-menu-item"
+            role="menuitem"
+            [attr.aria-label]="'View hierarchy for ' + employee.name"
+            title="View employee hierarchy"
+            (click)="showHierarchy(employee.id)">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M12 3v5m0 0H6m6 0h6M6 8v4m12-4v4M6 12H4v7h5v-7H6Zm12 0h-2v7h5v-7h-3Zm-6-4v4m0 0h-2v7h5v-7h-3Z" />
+            </svg>
+          </button>
+          <button type="button" role="menuitem" (click)="edit(employee.id)">Edit</button>
+          <button type="button" class="release-menu-item" role="menuitem" (click)="release(employee.id)">Release</button>
+        </div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<p class="empty-state" *ngIf="!isLoading && employees.length === 0">No employees match your search.</p>
+
+<app-pagination
+  [pageNumber]="pageNumber"
+  [pageSize]="pageSize"
+  [totalCount]="totalCount"
+  [isLoading]="isLoading"
+  (pageChange)="pageChange.emit($event)"
+  (pageSizeChange)="pageSizeChange.emit($event)"
+/>
